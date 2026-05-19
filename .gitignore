@@ -1,0 +1,6 @@
+.idea
+composer.lock
+*.log
+data/runtime/
+application/database.php
+uniapp/unpackage

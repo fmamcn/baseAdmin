@@ -1,0 +1,43 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">
+    <form action="{:url('admin/config/system')}" class="layui-form" method="post">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">系统设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">  
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">网站状态</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="website_status" value="1" title="开启" checked="checked">
+                            <input type="radio" name="website_status" value="0" title="关闭" {if isset($data.website_status) and $data.website_status eq '0'}checked="checked"{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">关闭原因</label>
+                        <div class="layui-input-block">
+                            <textarea name="colse_explain" class="layui-textarea int-sm">{$data.colse_explain|default=''}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">后台分页数</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-group" style="width:120px">
+                                <input type="number" name="page_number" value="{$data.page_number|default=''}" autocomplete="off" class="layui-input" min="0" step="1" lay-affix="number">
+                                <div class="layui-input-split layui-input-suffix">条</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item submit-footer">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit lay-filter="J-form">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}

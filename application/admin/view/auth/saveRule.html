@@ -1,0 +1,49 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container main-form">
+    <form action="{:request()->url()}" class="layui-form" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">上级规则</label>
+            <div class="layui-input-block">
+                <select name="pid">
+                    <option value="0">作为顶级</option>
+                    {foreach name="authRule" item="v"}
+                    <option value="{$v.id}" {if condition="isset($data) and $data.pid eq $v.id or $Request.param.pid eq $v.id"}selected{/if}>{$v.name}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" value="{$data.name|default=''}" autocomplete="off" placeholder="请输入名称" class="layui-input int-xs">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">控制器</label>
+            <div class="layui-input-block">
+                <input type="text" name="url" value="{$data.url|default=''}" autocomplete="off" placeholder="admin/index/index" class="layui-input int-xs">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图标</label>
+            <div class="layui-input-block">
+                <input type="text" name="icon" value="{$data.icon|default=''}" autocomplete="off" placeholder="layui-icon layui-icon-home" class="layui-input int-sm">
+                <p class="layui-remark">仅支持LayUI内置图标：<a href="https://layui.dev/docs/2/icon/" target="_blank">查看图标</a></p>
+            </div>
+        </div>
+        <div class="layui-form-item" pane>
+            <label class="layui-form-label">是否菜单</label>
+            <div class="layui-input-block">
+                <input type="radio" name="type" value="nav" title="是" {if empty($data) or isset($data) and $data.type eq 'nav'}checked{/if}>
+                <input type="radio" name="type" value="auth" title="否" {if isset($data) and $data.type eq 'auth'}checked{/if}>
+            </div>
+        </div>
+        <div class="layui-form-item submit-footer">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="J-form">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}

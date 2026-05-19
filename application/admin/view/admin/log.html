@@ -1,0 +1,45 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">
+	<div class="tools">
+        <div class="tool-btn">
+            <a data-href="{:url('admin/admin/truncate')}" class="layui-btn layui-bg-red T-del"><i class="layui-icon layui-icon-delete"></i> 一键清空</a>
+        </div>        
+    </div>
+    <div class="container-main">
+        <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+    </div>
+    <script type="text/html" id="headerTool">
+        <p class="header-count">当前共产生<strong id="count" class="layui-font-red"></strong>条操作记录。</p>
+    </script>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+layui.use(function(){
+    var $ = layui.$;
+    var table = layui.table;
+
+    table.render({
+        elem: '#dataTable',
+        url: '{:url('dataList_log')}',
+        toolbar: '#headerTool',
+        defaultToolbar: ['filter'],
+        limit: 20,
+        page: true,
+        cols: [[
+            {field:'admin_id', fixed: 'left', width:150, title: '管理员', templet: '{{= d.admin_id}} / {{=d.username}}'},
+            {field:'ip', width:150, title: 'IP地址'},
+            {field:'url', width:400, title: '请求链接'},
+            {field:'method', width:90, title: '请求类型'},
+            {field:'type', width:90, title: '资源类型'},
+            {field:'remark', width:180, title: '操作行为'},
+            {field:'create_time', minWidth: 160, title: '操作时间'},
+        ]],
+        done: function(res){
+            $('#count').html(res.count);
+        }
+    });
+});
+</script>
+{/block}

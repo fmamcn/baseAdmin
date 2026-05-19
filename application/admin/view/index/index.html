@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="__ADMIN__/images/favicon.ico" type="image/x-icon"/>
+    <link href="__STATIC__/layui/css/layui.css?v=2.11.0" rel="stylesheet">
+    <link href="__ADMIN__/css/app.css?{:time()}" rel="stylesheet">
+</head>
+<body>
+<div class="app-main">
+    <div class="app-menu">
+        <div class="menu-first">
+            <a href=""><img src="__ADMIN__/images/logo.png" class="logo"></a>
+            <ul>
+                {foreach name="navbar" item="v"}
+                <li data-id="{$key}"><a {if $key==0}class="active"{/if} href="javascript:;"><i class="{$v.icon}"></i>{$v.name}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+        <div class="menu-second">
+            <div class="menu-icon">管理系统</div>
+            {foreach name="navbar" item="vo"}
+            <ul class="sidebar-{$key} layui-menu" {if $key==0}style="display:block"{/if}>
+                {foreach name="vo['children']" item="v" key="vi"}
+                <li {if condition="isset($v['children'])"}class="layui-menu-item-group layui-menu-item-up" lay-options="{type:'group'}"{/if}>
+                    <div class="layui-menu-body-title" {if condition="!isset($v['children'])"}data-id="{$v.id}" data-url="{:url($v.url)}"{/if}>{$v.name}{if condition="isset($v['children'])"}<i class="layui-icon layui-icon-up"></i>{/if}</div>
+                    {if condition="isset($v['children'])"}
+                    <ul>
+                        {foreach name="v['children']" item="s"}
+                        <li><div class="layui-menu-body-title" data-id="{$v.id}" data-url="{:url($s.url)}">{$s.name}</div></li>
+                        {/foreach}
+                    </ul>
+                    {/if}
+                </li>
+                {/foreach}
+            </ul>      
+            {/foreach}
+        </div>
+    </div>
+    <div class="app-body">
+        <div class="app-header">
+            <ul class="layui-nav layui-bg-gray" lay-bar="disabled">
+                <li class="layui-nav-item" lay-unselect><a href="javascript:;"><i class="layui-icon layui-icon-fonts-clear"></i></a></li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" class="username">{:session('admin_auth.username')}</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" data-href="{:url('admin/index/editPassword')}" class="T-modal">个人设置</a></dd>
+                        <dd><a href="{:url('admin/index/logout')}">注销登陆</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+        <div class="layui-tabs layui-hide-v" id="headerTabs" lay-options="{closable: true, headerMode:'scroll'}">
+            <ul class="layui-tabs-header">
+                <li class="layui-this" lay-id="TAB7" lay-url="{:url('admin/index/main')}" lay-closable="false"><a href="javascript:;"><i class="layui-icon layui-icon-home"></i></a></li>
+            </ul>
+        </div>
+        <div class="app-iframe">
+            <iframe src="{:url('admin/index/main')}" id="iframe" frameborder="0" scrolling="yes" width="100%" height="100%" class="iframe"></iframe>
+        </div>
+    </div>
+</div>
+<script src="__STATIC__/layui/layui.js?v=2.10.3"></script>
+<script src="__ADMIN__/js/app.js?{:time()}"></script>
+<script type="text/javascript">var _U = "{:base64_encode(url('admin/index/nav'))}";</script>
+</body>
+</html>

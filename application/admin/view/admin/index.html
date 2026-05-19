@@ -1,0 +1,78 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">
+	<div class="tools">
+        <div class="tool-btn">
+            <a data-href="{:url('admin/admin/add')}" class="layui-btn T-modal"><i class="layui-icon layui-icon-add-1"></i> 添加管理员</a>
+        </div>        
+    </div>
+    <div class="container-main">
+        <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+    </div>
+    <script type="text/html" id="headerTool">
+        <p class="header-count">当前共有<strong id="count" class="layui-font-red"></strong>位管理员。</p>
+    </script>
+    <script type="text/html" id="ID-table-templet-switch">
+        <input type="checkbox" name="status" value="{{= d.id }}" title="启用|停用" lay-skin="switch" lay-filter="templet-status" {{= d.status == 1 ? "checked" : "" }}>
+    </script>
+    <script type="text/html" id="barBtn">
+        <div class="layui-clear-space barBtn">            
+            <a data-href="{:url('admin/admin/edit')}?id={{= d.id}}" lay-event="edit" class="edit">编辑</a>
+            <a data-href="{:url('admin/admin/del')}?id={{= d.id}}" lay-event="del" class="del">删除</a>
+        </div>
+    </script>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+layui.use(function(){
+    var $ = layui.$;
+    var table = layui.table;
+    var form = layui.form;
+    var notify = layui.notify;
+
+    table.render({
+        elem: '#dataTable',
+        url: '{:url('dataList')}',
+        toolbar: '#headerTool',
+        defaultToolbar: ['filter'],
+        limit: 20,
+        page: true,
+        cols: [[
+            {field:'id', fixed: 'left', width:40, title: 'ID', sort: true},
+            {field:'username', fixed: 'left', width:120, title: '用户名'},
+            {field:'name', width:150, title: '用户组'},
+            {field:'last_login_time', width:160, title: '上次登陆时间'},
+            {field:'last_login_ip', width:120, title: '上次登录IP'},
+            {field:'login_count', width:90, title: '登录次数'},
+            {field:'status', width:90, title: '状态', templet: '#ID-table-templet-switch'},
+            {field:'create_time', width:160, title: '创建时间'},
+            {fixed:'right', title:'操作', minWidth: 160, toolbar: '#barBtn'}
+        ]],
+        done: function(res){
+            $('#count').html(res.count);
+        }
+    });
+
+    form.on('switch(templet-status)', function(obj){
+        var load = layer.load(2);
+        var name = this.name;
+        var url = '{:url('edit')}' + '?id=' + this.value;
+        var data = {};
+        data[name] = obj.elem.checked == true ? 1 : 0;
+        data['_verify'] = 0;
+
+        $.post(url, data, function(res){            
+            layer.close(load);
+            if (res.code === 1) {
+                notify.success(res.msg, function () {
+                    table.reload('dataTable')
+                });
+            } else {
+                notify.error(res.msg);
+            }
+        })
+    });
+});
+</script>
+{/block}

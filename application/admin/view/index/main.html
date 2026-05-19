@@ -1,0 +1,34 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">    
+    {if !empty($server)}
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">服务器信息</div>
+            <div class="layui-card-body">
+                <table class="layui-table">
+                    <tbody>
+                        <tr>
+                            <td style="width:50%;">服务器操作系统：{$server.os}</td>
+                            <td style="width:50%;">服务器软件：{$server.sapi}</td>
+                        </tr>
+                        <tr>
+                            <td>PHP版本：{$server.version}</td>
+                            <td>MySQL版本：{$server.mysql.0.version}</td>
+                        </tr>
+                        <tr>
+                            <td>根目录：{$server.root}</td>
+                            <td>最大执行时间：{$server.max_execution_time}</td>
+                        </tr>
+                        <tr>
+                            <td>文件上传限制：{$server.upload_max_filesize}</td>
+                            <td>允许内存大小：{$server.memory_limit}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {/if}
+</div>
+{/block}

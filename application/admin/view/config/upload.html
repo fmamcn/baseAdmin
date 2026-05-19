@@ -1,0 +1,35 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">
+    <form action="{:url('admin/config/upload')}" class="layui-form" method="post">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">上传设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">  
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文件大小</label>
+                        <div class="layui-input-group" style="width:120px">
+                            <input type="number" name="upload_size" value="{$data.upload_size|default=''}" autocomplete="off" class="layui-input" min="0" step="1" lay-affix="number">
+                            <div class="layui-input-split layui-input-suffix">MB</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">文件格式</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="upload_ext" value="{$data.upload_ext|default=''}" autocomplete="off" class="layui-input int-sm" placeholder="请输入文件格式">
+                            <p class="layui-remark">多个请用半角都好分隔，如：jpg,png,zip,rar</p>
+                        </div>
+                    </div>
+                    <div class="layui-form-item submit-footer">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit lay-filter="J-form">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}

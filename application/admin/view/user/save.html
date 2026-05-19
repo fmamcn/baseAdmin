@@ -1,0 +1,18 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container main-form">
+    <form action="{:request()->url()}" class="layui-form" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="nickname" value="{$data.nickname|default=''}" disabled autocomplete="off" placeholder="请输入用户名" class="layui-input int-xs">
+            </div>
+        </div>
+        <div class="layui-form-item submit-footer">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="J-form">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}

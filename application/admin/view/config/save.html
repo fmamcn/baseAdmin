@@ -1,0 +1,78 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container main-form">
+    <form action="{:request()->url()}" class="layui-form" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">配置分组</label>
+            <div class="layui-input-block">
+                <select name="group">
+                    <option value="">请选择配置分组</option>
+                    {foreach name=":config('configGroup')" key="k" item="v"}
+                    <option value="{$k}" {if condition="isset($data) and $data.group eq $k"}selected="selected"{/if}>{$v}[{$k}]</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">配置标题</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" value="{$data.title|default=''}" autocomplete="off" placeholder="请输入配置标题" class="layui-input int-xs">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">配置标识</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" value="{$data.name|default=''}" autocomplete="off" placeholder="请输入配置标识" class="layui-input int-xs">
+                <p class="layui-remark">由英文字母和下划线组成，必须以字母开头</p>
+            </div>            
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">配置类型</label>
+            <div class="layui-input-block">
+                <select name="type">
+                    <option value="">请选择配置类型</option>
+                    {foreach name=":config('configType')" key="k" item="v"}
+                    <option value="{$k}" {if condition="isset($data) and $data.type eq $k"}selected{/if}>{$v}[{$k}]</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">编辑框大小</label>
+            <div class="layui-input-block">
+                <select name="size">
+                    <option value="">请选择编辑框大小</option>
+                    <option value="xs" {if condition="isset($data) and $data.size eq 'xs'"}selected{/if}>小【200px】</option>
+                    <option value="sm" {if condition="isset($data) and $data.size eq 'sm'"}selected{/if}>中【400px】</option>
+                    <option value="md" {if condition="isset($data) and $data.size eq 'md'"}selected{/if}>大【60%】</option>
+                    <option value="lg" {if condition="isset($data) and $data.size eq 'lg'"}selected{/if}>最大【100%】</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">默认值</label>
+            <div class="layui-input-block">
+                <input type="text" name="value" value="{$data.value|default=''}" autocomplete="off" placeholder="请输入默认值" class="layui-input int-xs">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选项值</label>
+            <div class="layui-input-block">
+                <textarea name="options" autocomplete="off" placeholder="请输入选项值" class="layui-textarea int-sm">{$data.options|default=''}</textarea>
+                <p class="layui-remark">仅适用于类型为单选项、下拉选项。格式为： 值:名称，如 1:是，每行一个</p>
+            </div>            
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea name="notes" autocomplete="off" placeholder="请输入选项备注" class="layui-textarea int-sm">{$data.notes|default=''}</textarea>
+            </div>            
+        </div>
+        <div class="layui-form-item submit-footer">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="J-form">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}

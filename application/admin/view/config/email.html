@@ -1,0 +1,66 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">
+    <form action="{:url('admin/config/email')}" class="layui-form" method="post">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">邮件设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">  
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">SMTP服务器</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="host" value="{$data.host|default=''}" autocomplete="off" class="layui-input int-sm">
+                            <p class="layui-remark">设置 SMTP 服务器的地址，如 smtp.qq.com</p>
+                        </div>                        
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">SMTP协议</label>
+                        <div class="layui-input-block">
+                            <select name="secure">
+                                <option value="tls" {if isset($data.secure) and $data.secure eq 'tls'}selected{/if}>非SSL协议</option>
+                                <option value="ssl" {if isset($data.secure) and $data.secure eq 'ssl'}selected{/if}>SSL协议</option>
+                            </select>
+                            <p class="layui-remark">设置 SMTP 协议</p>
+                        </div>                        
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">SMTP端口</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="port" value="{$data.port|default=''}" autocomplete="off" class="layui-input int-xs">
+                            <p class="layui-remark">设置 SMTP 服务器的端口，非SSL协议默认为 25，SSL协议默认为465</p>
+                        </div>                        
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发送邮箱</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" value="{$data.username|default=''}" autocomplete="off" class="layui-input int-sm">
+                            <p class="layui-remark">使用 SMTP 协议发送的邮件地址，如 admin@admin.com</p>
+                        </div>                        
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">验证密码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="password" value="{$data.password|default=''}" autocomplete="off" class="layui-input int-xs">
+                            <p class="layui-remark">使用 SMTP 协议发送的验证密码</p>
+                        </div>                        
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发送人</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="fromname" value="{$data.fromname|default=''}" autocomplete="off" class="layui-input int-sm">
+                            <p class="layui-remark">使用 SMTP 协议发送的发送人名称</p>
+                        </div>                        
+                    </div>
+                    <div class="layui-form-item submit-footer">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit lay-filter="J-form">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}

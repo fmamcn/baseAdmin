@@ -1,0 +1,98 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">
+	<div class="tools">
+        <div class="tool-search">
+        	<form class="layui-form" action="{:request()->url()}" method="get">
+	        	<div class="layui-form-item">
+	        		<div class="layui-input-group">
+	        			<input type="text" name="keyword" value="{$data.keyword|default=input('keyword', '')}" autocomplete="off" placeholder="昵称 / 手机号码" class="layui-input int-sm">
+		        		<div class="layui-input-suffix">
+	        				<button type="submit" lay-submit lay-filter="search" class="layui-btn layui-btn-blue"><i class="layui-icon layui-icon-search"></i> 查找</button>
+	        				<a class="layui-btn layui-btn-primary layui-border" href="{:url('index')}"><i class="layui-icon layui-icon-refresh"></i>重置</a>
+	        			</div>
+	        		</div>
+	        	</div>
+	        </form>
+        </div>   
+    </div>
+    <div class="container-main">
+        <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+    </div>
+    <script type="text/html" id="headerTool">
+        <p class="header-count">当前共有<strong id="count" class="layui-font-red"></strong>位会员。</p>
+    </script>
+    <script type="text/html" id="ID-table-templet-switch">
+        <input type="checkbox" name="status" value="{{= d.id }}" title="启用|禁用" lay-skin="switch" lay-filter="templet-status" {{= d.status == 1 ? "checked" : "" }}>
+    </script>
+    <script type="text/html" id="barBtn">
+        <div class="layui-clear-space barBtn">            
+            <a data-href="{:url('edit')}?id={{= d.id}}" lay-event="edit" class="edit">编辑</a>
+        </div>
+    </script>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+layui.use(function(){
+    var $ = layui.$;
+    var table = layui.table;
+    var form = layui.form;
+    var notify = layui.notify;
+
+    table.render({
+        elem: '#dataTable',
+        url: '{:url('dataList')}',
+        toolbar: '#headerTool',
+        defaultToolbar: ['filter'],
+        limit: 20,
+        page: true,
+        cols: [[
+            {field:'id', fixed: 'left', width:40, title: 'ID', sort: true},
+            {field:'nickname', fixed: 'left', width:180, title: '用户名'},
+            {field:'mobile', width:120, title: '手机号'},
+            {field:'last_login_time', width:160, title: '上次登陆时间'},
+            {field:'login_count', width:90, title: '登录次数'},
+            {field:'status', width:90, title: '状态', templet: '#ID-table-templet-switch'},
+            {field:'create_time', width:160, title: '创建时间'},
+            {fixed:'right', title:'操作', minWidth: 160, toolbar: '#barBtn'}
+        ]],
+        done: function(res){
+            $('#count').html(res.count);
+        }
+    });
+
+    form.on('switch(templet-status)', function(obj){
+        var load = layer.load(2);
+        var name = this.name;
+        var url = '{:url('edit')}' + '?id=' + this.value;
+        var data = {};
+        data[name] = obj.elem.checked == true ? 1 : 0;
+        data['_verify'] = 0;
+
+        $.post(url, data, function(res){            
+            layer.close(load);
+            if (res.code === 1) {
+                notify.success(res.msg, function () {
+                    table.reload('dataTable')
+                });
+            } else {
+                notify.error(res.msg);
+            }
+        })
+    });
+
+    form.on('submit(search)', function(data){
+        var field = data.field;
+        // 执行搜索重载
+        table.reload('dataTable', {
+            page: {
+                curr: 1
+            },
+            where: field
+        });
+        return false;
+    });
+});
+</script>
+{/block}

@@ -1,0 +1,94 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container">
+    <div class="tools">
+        <div class="tool-btn">
+            <a data-href="{:url('admin/ad/add')}" class="layui-btn T-modal"><i class="layui-icon layui-icon-add-1"></i> 添加广告</a>
+        </div>        
+    </div>
+    <div class="container-main">
+        <table class="layui-hide" id="dataTable" lay-filter="dataTable"></table>
+    </div>
+    <script type="text/html" id="headerTool">
+        <p class="header-count">当前共有<strong id="count" class="layui-font-red"></strong>个广告。</p>
+    </script>
+    <script type="text/html" id="ID-table-templet-switch">
+        <input type="checkbox" name="status" value="{{= d.id }}" title="启用|暂停" lay-skin="switch" lay-filter="templet-status" {{= d.status == 1 ? "checked" : "" }}>
+    </script>
+    <script type="text/html" id="barBtn">
+        <div class="layui-clear-space barBtn">            
+            <a data-href="{:url('admin/ad/edit')}?id={{= d.id}}" lay-event="edit" class="edit">编辑</a>
+            <a data-href="{:url('admin/ad/del')}?id={{= d.id}}" lay-event="del" class="del">删除</a>
+        </div>
+    </script>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+layui.use(function(){
+    var $ = layui.$;
+    var table = layui.table;
+    var form = layui.form;
+    var notify = layui.notify;
+
+    table.render({
+        elem: '#dataTable',
+        url: '{:url('dataList')}',
+        toolbar: '#headerTool',
+        defaultToolbar: ['filter'],
+        limit: 20,
+        page: true,
+        cols: [[
+            {field:'sort_order', title:'排序', width:20, fixed: 'left', unresize: true, edit: 'input'},
+            {field:'id', fixed: 'left', width:40, title: 'ID', sort: true},
+            {field:'title', fixed: 'left', width:120, title: '广告名称'},
+            {field:'image', width:150, title: '广告图片', templet: '<img src="{{=d.image }}" style="height:44px">'},
+            {field:'status', width:90, title: '状态', templet: '#ID-table-templet-switch'},
+            {fixed:'right', title:'操作', minWidth: 160, toolbar: '#barBtn'}
+        ]],
+        done: function(res){
+            $('#count').html(res.count);
+            table.on('edit(dataTable)', function(resObj){
+                var load = layer.load(2);
+                // 更新数据中对应的字段
+                var update = {};
+                update[resObj.field] = resObj.value;
+                update['_verify'] = 0;
+
+                var url = '{:url('edit')}' + '?id=' + resObj.data.id;
+                $.post(url, update, function(res){            
+                    layer.close(load);
+                    if (res.code == 1) {
+                        notify.success(res.msg, function () {
+                            table.reload('dataTable')
+                        });
+                    } else {
+                        notify.error(res.msg);
+                    }
+                })
+            });
+        }
+    });
+
+    form.on('switch(templet-status)', function(obj){
+        var load = layer.load(2);
+        var name = this.name;
+        var url = '{:url('edit')}' + '?id=' + this.value;
+        var data = {};
+        data[name] = obj.elem.checked == true ? 1 : 0;
+        data['_verify'] = 0;
+
+        $.post(url, data, function(res){            
+            layer.close(load);
+            if (res.code === 1) {
+                notify.success(res.msg, function () {
+                    table.reload('dataTable')
+                });
+            } else {
+                notify.error(res.msg);
+            }
+        })
+    });
+});
+</script>
+{/block}

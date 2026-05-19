@@ -1,0 +1,35 @@
+{extend name="base" /}
+{block name="body"}
+<div class="container main-form">
+    <form action="{:request()->url()}" class="layui-form" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">广告名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" value="{$data.title|default=''}" autocomplete="off" placeholder="请输入名称" class="layui-input int-xs">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">广告图片</label>
+            <div class="layui-input-group">
+                <input type="text" name="image" value="{$data.image|default=''}" autocomplete="off" placeholder="请上传广告图" class="layui-input int-sm">
+                <div class="layui-input-suffix">
+                    <button type="button" id="image" class="layui-btn layui-bg-blue"><i class="layui-icon layui-icon-folder-open"></i> 选择图片</button>
+                    {php}echo \util\Form::upload('image'){/php}
+                </div>
+            </div>
+        </div>            
+        <div class="layui-form-item">
+            <label class="layui-form-label">广告链接</label>
+            <div class="layui-input-block">
+                <input type="text" name="url" value="{$data.url|default=''}" autocomplete="off" class="layui-input int-sm">
+                <p class="layui-remark">http(s):// 或 /pages/index/index</p>
+            </div>
+        </div>
+        <div class="layui-form-item submit-footer">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="J-form">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+{/block}
