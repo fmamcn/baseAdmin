@@ -32,17 +32,17 @@ class User extends ApiBase
     {
         $refreshToken = $this->request->post('refresh_token');
         if (!$refreshToken) {
-            $this->sendError('缺少刷新Token', 401);
+            return $this->sendError('缺少刷新Token', 401);
         }
         // 校验 Refresh Token 是否有效
         $result = JwtAuth::verifyToken($refreshToken, 'refresh');
-        
-        if (is_array($result) && $result['status'] !== 'success') {
-            $this->sendError($result['msg'], 401);
+
+        if (is_array($result)) {
+            return $this->sendError($result['msg'], 401);
         }
         // Refresh Token 有效，签发新的 Access Token
         $newAccessToken = JwtAuth::createToken($result->uid, 'access');
-        
+
         return $this->sendSuccess(['access_token' => $newAccessToken]);
     }
 }
