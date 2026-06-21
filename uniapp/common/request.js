@@ -25,12 +25,14 @@ module.exports = (vm) => {
     uni.$u.http.interceptors.request.use((config) => {
         config.data = config.data || {}
 
-        // 如果正在刷新中且有refresh_token，则等待刷新完成后再发请求
+        // 如果正在刷新中，则等待刷新完成后再发请求
         if (isRefreshing) {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 addToQueue((newToken) => {
                     config.header['Authorization'] = 'Bearer ' + newToken;
-                    resolve(uni.$u.http.request(config));
+                    uni.$u.http.request(config)
+                        .then(res => resolve(res))
+                        .catch(err => reject(err));
                 });
             });
         }
@@ -58,7 +60,7 @@ module.exports = (vm) => {
                 return Promise.reject(data);
             }
 
-            // 如果已经在刷新中，将请求加入队列等待
+            // 如果已经在刷新中，等待刷新结果
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     addToQueue((newToken) => {
@@ -88,7 +90,17 @@ module.exports = (vm) => {
                     // 重试当前请求
                     config.header['Authorization'] = 'Bearer ' + newAccessToken;
                     const retryRes = await uni.$u.http.request(config);
-                    return retryRes.data === undefined ? {} : retryRes.data;
+
+                    // 处理重试响应的业务数据
+                    if (retryRes.code === 200) {
+                        return retryRes.data === undefined ? {} : retryRes.data;
+                    } else if (retryRes.code === 401) {
+                        // 新token也过期，可能是refresh_token即将过期
+                        handleLogout();
+                        return Promise.reject(retryRes);
+                    }
+                    // 其他业务错误，直接返回让调用方处理
+                    return Promise.reject(retryRes);
                 } else {
                     handleLogout();
                     return Promise.reject(data);
